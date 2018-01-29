@@ -72,9 +72,9 @@ class BaseModel(Model):
 
 class Block(BaseModel):
 
-    index         = IntegerField(unique=True)
+    height         = IntegerField(unique=True)
     proof         = IntegerField()
-    last_index    = IntegerField(unique=True, null=True)
+    last_height    = IntegerField(unique=True, null=True)
     timestamp     = FloatField(default=time.time)
     hash          = CharField()
     previous_hash = CharField()
@@ -83,11 +83,11 @@ class Block(BaseModel):
         db_table = 'block'
 
     def __repr__(self):
-        return "<Block('%s', '%s', '%s')>" % (self.index, self.proof, self.previous_hash)
+        return "<Block('%s', '%s', '%s')>" % (self.height, self.proof, self.previous_hash)
 
     def to_dict(self):
         data = {
-            'index'         : self.index,
+            'height'        : self.height,
             'proof'         : self.proof,
             'hash'          : self.hash,
             'previous_hash' : self.previous_hash,
@@ -101,7 +101,7 @@ class Block(BaseModel):
 
     @classmethod
     def last_block(cls):
-        l = Block.select().order_by(Block.index.desc()).limit(1)
+        l = Block.select().order_by(Block.height.desc()).limit(1)
         if l:
             return l[0]
         else:
@@ -109,7 +109,7 @@ class Block(BaseModel):
 
     @classmethod
     def chain(cls):
-        return Block.select().order_by(Block.index)
+        return Block.select().order_by(Block.height)
 
 class Transaction(BaseModel):
     sender    = CharField()

@@ -59,10 +59,10 @@ def mine():
     new_block = blockchain.new_block(proof, last_hash)
 
     response = {
-        'mesage' : "New block forged",
-        'index' : new_block['index'],
-        'transactions' : new_block['transactions'],
-        'proof' : new_block['proof'],
+        'message'       : "New block forged",
+        'height'        : new_block['height'],
+        'transactions'  : new_block['transactions'],
+        'proof'         : new_block['proof'],
         'previous_hash' : new_block['previous_hash'],
     }
     return jsonify(response), 200

@@ -141,16 +141,16 @@ class Blockchain(object):
         logging.debug("received new block with proof {proof} and previous hash {previous_hash}")
         last_block = self.last_block()
         if last_block:
-            index = last_block['index'] + 1
-            last_index = last_block['index']
+            height = last_block['height'] + 1
+            last_height = last_block['height']
         else:
-            index = 0
-            last_index = None
+            height = 0
+            last_height = None
         if not previous_hash:
             previous_hash = self.hash(self.last_block())
 
         models = list()
-        block = Block(index=index, proof=proof, previous_hash=previous_hash, last_index=last_index)
+        block = Block(height=height, proof=proof, previous_hash=previous_hash, last_height=last_height)
         self.db.save(block)
 
         for txn in self.current_transactions:
@@ -169,7 +169,7 @@ class Blockchain(object):
         :param sender: Address of the Sender
         :param recipient: Address of the Recipient
         :param amount: Amount
-        :return: The index of the Block that will hold this transaction
+        :return: The height of the Block that will hold this transaction
         '''
         self._current_transactions.append( {
             'sender' : sender,
@@ -177,7 +177,7 @@ class Blockchain(object):
             'amount' : amount,
         } )
 
-        return self.last_block()['index'] + 1
+        return self.last_block()['height'] + 1
 
     def register_node(self, address):
         '''
@@ -202,10 +202,10 @@ class Blockchain(object):
         :return: True if valid, False if not
         '''
         last_block = chain[0]
-        current_index = 1
+        current_height = 1
 
-        with current_index < len(chain):
-            block = chain[current_index]
+        with current_height < len(chain):
+            block = chain[current_height]
             logging.info("last block: %s, current block: %s", last_block, block)
 
             # Check that hash of the block is correct
@@ -217,7 +217,7 @@ class Blockchain(object):
                 return False
 
             last_block = block
-            current_index += 1
+            current_height += 1
 
         return True
 
